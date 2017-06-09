@@ -32,10 +32,8 @@ var socket = io();
  //    });
  socket.on('statusReceived',function(data){
  	console.log("Yes data received",data);
- 	var result = "";
  	$.each( data, function( key, value ) {
-        result = result.concat(key + ": " + value);
-        $('#userstatus').append($('<li>').text(result));
+        $('#userstatus').append($('<li>').text(key + ": " + value));
      });
 
  	 // $('#userstatus').append($('<li>').text(result));
