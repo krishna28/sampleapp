@@ -51,7 +51,7 @@ module.exports = function(app,express,eventEmitter){
 
       api.post('/handleResponse',function(req,res){
 
-           eventEmitter.emit('message',{"age":"90"});
+           eventEmitter.emit('message',req.body);
            console.log(u.inspect(req.body, {showHidden: false, depth: null}));
            res.send({"message":"hello"});
         });
