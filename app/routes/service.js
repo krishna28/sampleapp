@@ -43,9 +43,6 @@ module.exports = function(app,express){
 
       api.get('/handleResponse',function(req,res){
 
-
-           console.log(u.inspect(req, {showHidden: false, depth: null}));
-           console.log(u.inspect(res, {showHidden: false, depth: null}));
            res.send({"message":"hello"});
         });
 
