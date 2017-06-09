@@ -2,6 +2,8 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -13,8 +15,30 @@
       <blockquote>
         Welcome the goverify sample app
       </blockquote>
+      <ul id="messages">
+      </ul>
+      <hr>
+      <ul id="userstatus">
+      	
+      </ul>
     </div>
   </div>
 </div>
+<script>
+var socket = io();
+ // socket.on('verifiedStatus', function(msg){
+ // 	console.log("krishnames is ",msg);
+ //      $('#messages').append($('<li>').text(msg.name));
+ //    });
+ socket.on('statusReceived',function(data){
+ 	console.log("Yes data received",data);
+ 	var result = "";
+ 	$.each( data, function( key, value ) {
+        result = result.concat(key + ": " + value);
+     });
+
+ 	 $('#userstatus').append($('<li>').text(result));
+ });
+</script>
 </body>
 </html>

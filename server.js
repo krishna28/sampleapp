@@ -7,6 +7,11 @@ var morgan = require('morgan'); // package used for logging
 var config = require('./config'); // config file
 
 var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+var events = require('events');
+var eventEmitter = new events.EventEmitter();
 
 var middleware = require('./app/routes/middleware')(app,config);
 
@@ -23,15 +28,25 @@ app.use(express.static(__dirname + '/public')); // serves static file from publi
 
 
 
-var api = require('./app/routes/service')(app,express);
+var api = require('./app/routes/service')(app,express,eventEmitter);
 
 app.use('/api', api); // end point will be accessed by appending api to the end point
+  eventEmitter.on('message',function(data){
+   console.log("Yes event received ouside", data);
+  });
 
+io.on('connection', function(socket){
+  console.log('a user connected');
+  eventEmitter.on('message',function(data){
+   console.log("Yes event received inside ", data);
+   socket.emit('statusReceived', data);
+  });
+  // var data;
+  // var res = data || {"name":"krishna"};
+  socket.emit('verifiedStatus', {"name":"krishna"});
+});
 
-
-
-app.listen(config.port,function(err){
-
+http.listen(config.port, function(err){
   if(err){
     console.log("error");
   }else{
@@ -39,4 +54,15 @@ app.listen(config.port,function(err){
   }
 
 });
+
+
+// app.listen(config.port,function(err){
+
+//   if(err){
+//     console.log("error");
+//   }else{
+//     console.log("server listening on port"+config.port);   
+//   }
+
+// });
 

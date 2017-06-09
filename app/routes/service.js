@@ -1,9 +1,11 @@
 
 //used to import util module
 var util = require('./customutil');
-const u = require('util')
+const u = require('util');
 
-module.exports = function(app,express){
+
+
+module.exports = function(app,express,eventEmitter){
     
     var api = express.Router();
 
@@ -49,7 +51,7 @@ module.exports = function(app,express){
 
       api.post('/handleResponse',function(req,res){
 
-
+           eventEmitter.emit('message',{"age":"90"});
            console.log(u.inspect(req.body, {showHidden: false, depth: null}));
            res.send({"message":"hello"});
         });
