@@ -39,7 +39,8 @@
           reqObject.vtype=vtype;
           var result = mainService.verify(reqObject,config,function(err,response){
             if(!err){
-              console.log("From the controller repsone is ",response.messageId)
+              console.log("From the controller repsone is ",response.messageId);
+              res.send(response.messageId);
               eventEmitter.on('message',function(data){
                 console.log("Event received ",data);
                 res.send(data);
