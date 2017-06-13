@@ -26,8 +26,9 @@ var errorHandler = require('./app/middlewares/errorHandler');
 app.use(errorHandler.error);
 
 //reading client details
-if(process.argv[2] && process.argv[3]){
-	const finalString = process.argv[2].toString().concat(":").concat(process.argv[3].toString());
+
+if(process.env.clientId && process.env.clientSecret){
+	const finalString = process.env.clientId.toString().concat(":").concat(process.env.clientSecret.toString());
 	var bytes = utf8.encode(finalString);
 	var encodedString = base64.encode(bytes);
 	console.log("The encoded string is ",encodedString)
