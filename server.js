@@ -70,13 +70,3 @@ http.listen(config.port, function(err){
 });
 
 
-// app.listen(config.port,function(err){
-
-//   if(err){
-//     console.log("error");
-//   }else{
-//     console.log("server listening on port"+config.port);   
-//   }
-
-// });
-

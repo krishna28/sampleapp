@@ -35,10 +35,11 @@ var getToken = function getToken(config,cb){
 
 	rp(options)
 	.then(function (body) {
-		cb(body);
+		cb(null,body);
 	})
 	.catch(function (err) {
-		console.log("The getToken: request failed with err",err);
+		console.log("The getToken: request failed with err",err.message);
+		cb(err.message);
 	});
 
 }
@@ -52,7 +53,6 @@ var getUserDetails = function getUserDetails(config,access_token,userId,cb){
     //https://gmi-apac.iwsinc.com/gmiserver/person?userId=krishnakantsingh@melco-resorts.com
     const url = config.basepath.concat("gmiserver/person");
     const auth_key = "Bearer ".concat(access_token);
-    console.log("Auth key is",auth_key);
     const options = {
     	method: 'GET',  
     	uri: url,
@@ -67,13 +67,13 @@ var getUserDetails = function getUserDetails(config,access_token,userId,cb){
     	json:true
     }
     rp(options)
-    .then(function (body,res) {
-    	console.log(body);
-    	console.log("Res is ",res);
+    .then(function (body) {
     	cb(null,body);
     })
     .catch(function (err) {
-    	console.log("The getUserDetails: request failed with err",err);
+
+    	console.log("The getUserDetails: request failed with err",err.message);
+    	cb(err.message);
     });
 
 
@@ -86,14 +86,13 @@ var sendAlert = function sendAlert(g_object,cb){
 
 	var formData = {
 		"maxResponseAttempts":3, 
-		"postbackUrl":"https://young-sands-51742.herokuapp.com/api/handleResponse", 
+		"postbackUrl":g_object.postbackUrl, 
 		"template" : g_object.vtype,
 		"metadata":{"reason":"Unusual activity detected."},
 		"expiresIn":180
 	}
 
 	const auth_key = "Bearer ".concat(g_object.authToken);
-	console.log("The auth key is", auth_key);
 
 	const options = {
 		method: 'POST',  
@@ -106,15 +105,13 @@ var sendAlert = function sendAlert(g_object,cb){
 		},
 		json:true
 	}
-	console.log("Details of option object ",options);
 	rp(options)
-	.then(function (body,res) {
-		console.log(body);
-		console.log("Res is ",res);
+	.then(function (body) {
 		cb(null,body);
 	})
 	.catch(function (err) {
-		console.log("The getUserDetails: request failed with err",err);
+		console.log("The getUserDetails: request failed with err",err.message);
+		cb(err.message);
 	});
 
 
@@ -134,23 +131,48 @@ var sendAlert = function sendAlert(g_object,cb){
  */
  var verify = function verify(reqObject,config,cb){
 
- 	getToken(config,function(response){
- 		console.log("Yes the token is fetched",response.access_token);
+ 	getToken(config,function(err,response){
+ 		if(!err){
+              console.log("response ius" , response);
+ 			getUserDetails(config,response.access_token,reqObject.userId,function(err,body){
+ 				if(!err){
+ 					console.log("User details "+ body);
+ 					var g_object = {};
+ 					g_object.id=body.id;
+ 					g_object.vtype= reqObject.vtype;
+ 					var vtype_sub = reqObject.vtype.split("/")[reqObject.vtype.split("/").length-1];
+ 					const url = config.basepath.concat("gmiserver/tenant/").concat(tenant).concat("/app/").concat(appId).concat("/template/").concat(vtype_sub).concat("/person/").concat(body.id).concat("/message");
+ 					g_object.url=url;
+ 					g_object.authToken = response.access_token;
+ 					g_object.postbackUrl = reqObject.postbackUrl;
+ 					sendAlert(g_object,function(err,body){
+ 						if(!err){
+ 							console.log("Final response received ",body);
+ 						cb(err,body);
+ 							
+ 						}else{
+ 							console.log("Yes inside the error final token");
+ 							cb(err);
+ 							return;
+ 						}
+ 						
+ 					});
+ 					
+ 				}else{
 
- 		getUserDetails(config,response.access_token,reqObject.userId,function(err,body){
- 			var g_object = {};
- 			g_object.id=body.id;
- 			g_object.vtype= reqObject.vtype;
- 			var vtype_sub = reqObject.vtype.split("/")[reqObject.vtype.split("/").length-1];
- 			const url = config.basepath.concat("gmiserver/tenant/").concat(tenant).concat("/app/").concat(appId).concat("/template/").concat(vtype_sub).concat("/person/").concat(body.id).concat("/message");
- 			g_object.url=url;
- 			g_object.authToken = response.access_token;
- 			sendAlert(g_object,function(err,body){
- 				console.log("Final response received ",body);
- 				cb(err,body);
+ 					console.log("Yes inside the error get userDetails");
+ 					cb(err);
+ 					return false;
+ 				}
+
  			});
+ 			
+ 		}else{
+ 			console.log("Yes inside the error get token");
+ 			cb(err);
+ 			return false;
+ 		}
 
- 		});
  	});
  }
 
