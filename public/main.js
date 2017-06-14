@@ -21,6 +21,8 @@
 			event.preventDefault();
 			console.log($(formId).serialize());
 			$(submitBtn).attr("disabled","disabled");
+			$("#userAuthenticated").removeClass('list-group-item-success'); 
+			$("#requestsend").removeClass('list-group-item-success');   
 			$.ajax({
 				type: "POST",
 				url: "/api/verify",
