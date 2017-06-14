@@ -32,6 +32,7 @@
          */    
 
          api.post('/verify',function(req,res){
+          console.log("The req body is ",req.body);
 
           var reqObject = {};
           reqObject.userId=req.body.userId;
@@ -43,7 +44,7 @@
           var result = mainService.verify(reqObject,config,function(err,response){
             if(!err){
               console.log("From the controller repsone is ",response);
-              res.send(response);               
+              res.send(response);              
             }else{
               res.send(err); 
             }
@@ -56,10 +57,11 @@
 
          api.post('/handleResponse',function(req,res){
           console.log("Response from the callback received",req.body);
+
            eventEmitter.emit('message',req.body);
            console.log(util.inspect(req.body, {showHidden: false, depth: null}));
+           // res.render('postbackhandler',req.body);
            res.end();
          });
          return api;
-
-       }
+      }

@@ -35,7 +35,7 @@ var socket = io();
  	$.each( data, function( key, value ) {
         $('#userstatus').append($('<li>').text(key + ": " + value));
      });
-
+    $('#userstatus').empty();
  	 // $('#userstatus').append($('<li>').text(result));
  });
 </script>

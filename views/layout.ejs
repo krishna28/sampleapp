@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Go Verify Sample app</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<style type="text/css">
+		.bs-example{
+			margin: 20px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="container">
+		<div class="row">
+			<div class="bs-example">
+				<h1>GoVerify App Demo</h1>
+				<hr>
+			</div>
+		</div>
+		<%- body %>
+	</div>
+</body>
+<script>
+	var socket = io();
+	socket.on('statusReceived',function(data){
+		console.log("Yes data received",data);
+		$.each( data, function( key, value ) {
+			$('#userstatus').append($('<li>').text(key + ": " + value));
+		});
+      $("#patronDetails").attr("disabled",false);
+      if(data.success){
+      	$("#userAuthenticated").addClass('list-group-item-success');     	
+      }else{
+      	$("#userAuthenticated").addClass('list-group-item-danger');
+      }
+	});
+    // var formStatus = false;.
+	$(function() {
+          
+		$("#patronDetails").submit(function(event){
+			event.preventDefault();
+			console.log($("#patronDetails").serialize());
+			formStatus = true;
+			$(this).attr("disabled","disabled");
+			$.ajax({
+				type: "POST",
+				url: "/api/verify",
+				data: $("#patronDetails").serialize(),
+				 dataType: "json", // expected format for response
+				 contentType: "application/x-www-form-urlencoded",
+				 success: function(data){
+				 	console.log("The data is ",data);
+				 	$("#requestsend").addClass('list-group-item-success'); 
+				 },
+				 error:function(err){
+				 	console.log("The error is ",err);
+				 	$("#requestsend").addClass('list-group-item-danger'); 
+				 }
+				});
+			return false;
+		})
+	});    
+</script>
+</html>
