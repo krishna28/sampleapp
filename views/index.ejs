@@ -1,35 +1,43 @@
 
 <div class="row">
-<div class="col-sm-3">
+    <div class="col-sm-3">
 
-<label for="userId">Patron request details</label>
-<div class="list-group">
+        <label for="userId">Patron request details</label>
+        <div class="list-group">
 
-  <a href="#" id="requestsend" class="list-group-item">Request Send Status</a>
-  <a href="#" id="userAuthenticated" class="list-group-item">User Authenticated Status</a>
-</div>
+          <a href="#" id="requestsend" class="list-group-item">Request Send Status</a>
+          <a href="#" id="userAuthenticated" class="list-group-item">User Authenticated Status</a>
+      </div>
 
-</div>
-<div class="col-sm-6 centered">
+  </div>
+  <div class="col-sm-6 centered">
     <form id="patronDetails" name="patronDetails" action="api/verify" method="POST">
         <div class="form-group">
             <label for="userId">Patron Email</label>
             <input type="text" name="userId" class="form-control" id="userId" placeholder="Patron Email">
         </div>
-         <div class="form-group">
+        <div class="form-group">
             <label for="location">Location</label>
             <input type="text" name="location" class="form-control" id="location" placeholder="Location">
         </div>
         <div class="form-group">
             <label for="vtype">Verification Type</label>
-            <input type="vtype" name="vtype" class="form-control" id="vtype" placeholder="V Type">
-        </div>
-        <div class="form-group">
-            <label for="inputPassword">Postback url</label>
-            <input type="text" name="postbackUrl" class="form-control" id="postbackUrl" placeholder="Postback URL">
-        </div>
-        <button id="patronSubmitBtn" type="submit" class="btn btn-primary">Redeem</button>
-    </form>
+            <!-- <input type="vtype" name="vtype" class="form-control" id="vtype" placeholder="V Type"> -->
+            <select class="form-control" name="vtype" id="vtype">
+             <!--  <option value="">---Select any options---</option>
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+              <option value="mercedes">Mercedes</option>
+              <option value="audi">Audi</option> -->
+
+          </select>
+      </div>
+      <div class="form-group">
+        <label for="inputPassword">Postback url</label>
+        <input type="text" name="postbackUrl" class="form-control" id="postbackUrl" placeholder="Postback URL">
+    </div>
+    <button id="patronSubmitBtn" type="submit" class="btn btn-primary">Redeem</button>
+</form>
 </div>
 </div>
 

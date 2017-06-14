@@ -22,18 +22,28 @@
   module.exports = function(app,express,eventEmitter,config){
 
     var api = express.Router();
+    
+    /**
+     * @name verificationType
+     * @description get all the list of verification type
+    */
+    api.get('/verificationType',function(req,res){
+      res.json(verificationTypeObject);
+    });
 
         /**
          * @name verify
          * @description end point to verify the user details
-         * @param userid
-         * @param verification type
+         * @param userid 
+         * @description  enter the registered userid with the tenant
+         * @param vtype
+         * @description enter the verification type for user verification
+         * @param postbackUrl
+         * @description enter the callback url to receive the authentication status
          *  end point to get details of user and verify it
          */    
 
          api.post('/verify',function(req,res){
-          console.log("The req body is ",req.body);
-
           var reqObject = {};
           reqObject.userId=req.body.userId;
           var vtype= verificationTypeObject[req.body.vtype] || verificationTypeObject["choice"];
@@ -41,14 +51,14 @@
           reqObject.vtype=vtype;
           reqObject.postbackUrl = finalCallBack;
           if(reqObject.postbackUrl && reqObject.vtype && reqObject.userId){
-          var result = mainService.verify(reqObject,config,function(err,response){
-            if(!err){
-              console.log("From the controller repsone is ",response);
-              res.send(response);              
-            }else{
-              res.send(err); 
-            }
-          });
+            var result = mainService.verify(reqObject,config,function(err,response){
+              if(!err){
+                console.log("From the controller repsone is ",response);
+                res.send(response);              
+              }else{
+                res.send(err); 
+              }
+            });
           }else{
             res.send({status:400,message:"bad request make sure you pass userId, vtype and postbackUrl as content type 'application/x-www-form-urlencoded'"})
           }           
@@ -58,10 +68,10 @@
          api.post('/handleResponse',function(req,res){
           console.log("Response from the callback received",req.body);
 
-           eventEmitter.emit('message',req.body);
-           console.log(util.inspect(req.body, {showHidden: false, depth: null}));
+          eventEmitter.emit('message',req.body);
+          console.log(util.inspect(req.body, {showHidden: false, depth: null}));
            // res.render('postbackhandler',req.body);
            res.end();
          });
          return api;
-      }
+       }

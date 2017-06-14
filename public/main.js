@@ -17,6 +17,28 @@
 
 	$(function() {
 
+		var getAllVerificationType = function  getAllVerificationType(){
+
+			$.ajax({
+				type: "GET",
+				url: "/api/verificationType",
+				 dataType: "json", // expected format for response
+				 success: function(data){
+				 	$.each(data, function (key, val) {
+				 		$('#vtype').append($('<option>', { 
+				 			value: key,
+				 			text : key 
+				 		}));
+				 	});
+				 },
+				 error:function(err){
+				 	console.log("Error while fetching the verificationType  ",err);
+				 
+				 }
+				});
+
+		}
+       getAllVerificationType();
 		$(formId).submit(function(event){
 			event.preventDefault();
 			console.log($(formId).serialize());

@@ -76,7 +76,6 @@ var getUserDetails = function getUserDetails(config,access_token,userId,cb){
     	cb(err.message);
     });
 
-
 }
 
 
@@ -114,67 +113,68 @@ var sendAlert = function sendAlert(g_object,cb){
 		cb(err.message);
 	});
 
-
-
-
 }
 
 
 
 
-/**
- * @name verify
- * @description get user details
- * @param userid
- * @param verification Type 
- * @param cb a callback function
- */
- var verify = function verify(reqObject,config,cb){
+        /**
+         * @name verify
+         * @description end point to verify the user details
+         * @param userid 
+         * @description  enter the registered userid with the tenant
+         * @param vtype
+         * @description enter the verification type for user verification
+         * @param postbackUrl
+         * @description enter the callback url to receive the authentication status
+         *  end point to get details of user and verify it
+         */ 
+         var verify = function verify(reqObject,config,cb){
 
- 	getToken(config,function(err,response){
- 		if(!err){
-              console.log("response ius" , response);
- 			getUserDetails(config,response.access_token,reqObject.userId,function(err,body){
- 				if(!err){
- 					console.log("User details "+ body);
- 					var g_object = {};
- 					g_object.id=body.id;
- 					g_object.vtype= reqObject.vtype;
- 					var vtype_sub = reqObject.vtype.split("/")[reqObject.vtype.split("/").length-1];
- 					const url = config.basepath.concat("gmiserver/tenant/").concat(tenant).concat("/app/").concat(appId).concat("/template/").concat(vtype_sub).concat("/person/").concat(body.id).concat("/message");
- 					g_object.url=url;
- 					g_object.authToken = response.access_token;
- 					g_object.postbackUrl = reqObject.postbackUrl;
- 					sendAlert(g_object,function(err,body){
- 						if(!err){
- 							console.log("Final response received ",body);
- 						cb(err,body);
- 							
- 						}else{
- 							console.log("Yes inside the error final token");
- 							cb(err);
- 							return;
- 						}
- 						
- 					});
- 					
- 				}else{
+         	getToken(config,function(err,response){
+         		if(!err){
+         			console.log("response ius" , response);
+         			getUserDetails(config,response.access_token,reqObject.userId,function(err,body){
+         				if(!err){
+         					console.log("User details "+ body);
+         					var g_object = {};
+         					g_object.id=body.id;
+         					g_object.vtype= reqObject.vtype;
+         					var vtype_sub = reqObject.vtype.split("/")[reqObject.vtype.split("/").length-1];
+         					const url = config.basepath.concat("gmiserver/tenant/").concat(tenant).concat("/app/").concat(appId).concat("/template/").concat(vtype_sub).concat("/person/").concat(body.id).concat("/message");
+         					g_object.url=url;
+         					g_object.authToken = response.access_token;
+         					g_object.postbackUrl = reqObject.postbackUrl;
+         					sendAlert(g_object,function(err,body){
+         						if(!err){
+         							console.log("Final response received ",body);
+         							cb(err,body);
 
- 					console.log("Yes inside the error get userDetails");
- 					cb(err);
- 					return false;
- 				}
+         						}else{
+         							console.log("Yes inside the error final token");
+         							cb(err);
+         							return;
+         						}
 
- 			});
- 			
- 		}else{
- 			console.log("Yes inside the error get token");
- 			cb(err);
- 			return false;
- 		}
+         					});
 
- 	});
- }
+         				}else{
+
+         					console.log("Yes inside the error get userDetails");
+         					cb(err);
+         					return false;
+         				}
+
+         			});
+
+         		}else{
+         			console.log("Yes inside the error get token");
+         			cb(err);
+         			return false;
+         		}
+
+         	});
+         }
 
 /**
  * @description
