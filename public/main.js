@@ -44,7 +44,9 @@
 			console.log($(formId).serialize());
 			$(submitBtn).attr("disabled","disabled");
 			$("#userAuthenticated").removeClass('list-group-item-success'); 
-			$("#requestsend").removeClass('list-group-item-success');   
+			$("#requestsend").removeClass('list-group-item-success'); 
+			$("#userAuthenticated").removeClass('list-group-item-danger'); 
+			$("#requestsend").removeClass('list-group-item-danger');   
 			$.ajax({
 				type: "POST",
 				url: "/api/verify",
@@ -58,6 +60,7 @@
 				 error:function(err){
 				 	console.log("The error is ",err);
 				 	$("#requestsend").addClass('list-group-item-danger'); 
+				 	$(submitBtn).attr("disabled",false);
 				 }
 				});
 			return false;
